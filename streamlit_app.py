@@ -16,7 +16,7 @@ play_video = st.checkbox("Play Video")
 if play_video:
     # Embed the YouTube player
     video_url = "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"  # Replace with your video URL
-    st.video(video_url)
+    st.audio(video_url, autoplay=True)
     
     if st.session_state.start_time is None:
         st.session_state.start_time = time.time()  # Record start time
