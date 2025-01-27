@@ -6,34 +6,30 @@ st.title("YouTube Video Timer")
 # Initialize session state variables
 if "start_time" not in st.session_state:
     st.session_state.start_time = None  # When the video starts
+if "end_time" not in st.session_state:
+    st.session_state.end_time = None  # When the video ends
 if "elapsed_time" not in st.session_state:
-    st.session_state.elapsed_time = 0  # Total time video has been playing
-if "is_playing" not in st.session_state:
-    st.session_state.is_playing = False  # Whether the video is currently playing
+    st.session_state.elapsed_time = 0  # Total elapsed time
 
 # Simulate play/pause functionality with a checkbox
 play_video = st.checkbox("Play Video")
+if play_video:
+    # Embed the YouTube player
+    video_url = "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"  # Replace with your video URL
+    st.video(video_url)
+    
+    if st.session_state.start_time is None:
+        st.session_state.start_time = time.time()  # Record start time
 
-# Embed the YouTube player
-video_url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"  # Replace with your video URL
-st.video(video_url)
-
-# Handle play event
-if play_video and not st.session_state.is_playing:
-    st.session_state.start_time = time.time()  # Record start time
-    st.session_state.is_playing = True
-
-# Handle pause event
-if not play_video and st.session_state.is_playing:
-    # Calculate elapsed time and accumulate
-    st.session_state.elapsed_time += time.time() - st.session_state.start_time
-    st.session_state.start_time = None
-    st.session_state.is_playing = False
-
-# Update elapsed time if video is playing
-if st.session_state.is_playing:
-    st.session_state.elapsed_time += time.time() - st.session_state.start_time
-    st.session_state.start_time = time.time()  # Reset start_time to current
+else:
+    if st.session_state.start_time is not None:
+        st.session_state.end_time = time.time()
+        st.session_state.elapsed_time += st.session_state.end_time - st.session_state.start_time
+        st.session_state.start_time = None  # Reset the start time once the video is paused
 
 # Display the total elapsed time
-st.write(f"Video has been playing for {round(st.session_state.elapsed_time, 2)} seconds.")
+if st.session_state.elapsed_time > 0:
+    st.write(f"Video has been playing for {round(st.session_state.elapsed_time, 2)} seconds.")
+else:
+    st.write("Start the video via the toggle button.")
+
